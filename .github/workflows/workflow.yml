@@ -1,12 +1,6 @@
 name: Code Workflow
 
-on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+on: [push, pull_request]
 
 jobs:
   compile:
@@ -19,26 +13,7 @@ jobs:
 
       - name: Compile code
         run: |
-          # Replace this command with the actual command to compile your code
-          make compile
-
-  check_norm:
-    name: Check Norm
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install linter
-        run: |
-          # Replace this command with the command to install the norm linter
-          npm install norm-linter
-
-      - name: Check norm
-        run: |
-          # Replace this command with the command to check the norm
-          norm-linter check
+          make re
 
   issue_on_failure:
     name: Issue on Workflow Failure
