@@ -1,0 +1,66 @@
+name: Code Workflow
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  compile:
+    name: Compile Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Compile code
+        run: |
+          # Replace this command with the actual command to compile your code
+          make compile
+
+  check_norm:
+    name: Check Norm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install linter
+        run: |
+          # Replace this command with the command to install the norm linter
+          npm install norm-linter
+
+      - name: Check norm
+        run: |
+          # Replace this command with the command to check the norm
+          norm-linter check
+
+  issue_on_failure:
+    name: Issue on Workflow Failure
+    runs-on: ubuntu-latest
+    
+    if: failure()
+
+    steps:
+      - name: Create issue
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issueTitle = 'Workflow Failure';
+            const issueBody = `The code workflow has failed. Please investigate and resolve the issue.`;
+            const createIssue = async () => {
+              const { data: newIssue } = await github.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody
+              });
+              console.log(`Created issue ${newIssue.number}`);
+            };
+            createIssue();
